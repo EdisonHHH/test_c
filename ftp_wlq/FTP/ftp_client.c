@@ -1136,7 +1136,7 @@ void open_ftpsrv()
 				if(1)
 				{
 					printf("Connect Seccessed!\n");
-					start_ftp_cmd(dr,DEFAULT_FTP_PORT);
+					start_ftp_cmd(dress_ftp,DEFAULT_FTP_PORT);
 				}
 				else
 				{
