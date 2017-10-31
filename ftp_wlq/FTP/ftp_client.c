@@ -1095,6 +1095,7 @@ int start_ftp_cmd(char * host_ip_addr, int port)
 /////////////////////////////////////////////
 void open_ftpsrv()
 {
+
 	char usr_cmd[1024];
 	int cmd_flag;
 	while(1)
@@ -1136,7 +1137,7 @@ void open_ftpsrv()
 				if(1)
 				{
 					printf("Connect Seccessed!\n");
-					start_ftp_cmd(dress_ftp,DEFAULT_FTP_PORT);
+					start_ftp_cmd(dress_ftp ,DEFAULT_FTP_PORT);
 				}
 				else
 				{
