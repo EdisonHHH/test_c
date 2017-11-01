@@ -396,85 +396,83 @@ void handle_cwd(int client_sock)
 //delete dir
 void handle_rmd(int client_sock)
 {
-        char    rmd_info[MSG_INFO];
-        char    tmp_dir[DIR_INFO];
-        char    client_dir[DIR_INFO];
-                                                                                                               
-        char t_dir[DIR_INFO];
-        int dirlength=-1;
-        int length=strlen(client_Control_Info);
-        int i=0;
-        for(i=4;i<length;i++)
-                        format_client_Info[i-4]=client_Control_Info[i];
-                format_client_Info[i-6]='\0';
-                                                                                                               
-                if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
-                {
-                getcwd(client_dir, DIR_INFO);
-                dirlength=strlen(client_dir);
-                client_dir[dirlength]='/';
-                }
-                                                                                                               
-                                                                                                               
-        for(i=4;i<length;i++)
-                {
-                        client_dir[dirlength+i-3]=client_Control_Info[i];
-                }
-                client_dir[dirlength+i-5]='\0';
-                                                                                                               
-                // printf("%s\r\n",client_dir);
-        if (rmdir(client_dir) >= 0)
-                {
-                	printf( " \"%s\" is deleted successfully.\r\n", client_dir);                
-			send_client_info(client_sock, rmd_info, strlen(rmd_info));
-                }
-                else
-                {
-                        snprintf(rmd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
-                        perror("rmdir():");
-                        send_client_info(client_sock, rmd_info, strlen(rmd_info));
-                }
+	char rmd_info[MSG_INFO];
+	char tmp_dir[DIR_INFO];
+	char client_dir[DIR_INFO];
+	                                                                                                       
+	char t_dir[DIR_INFO];
+	int dirlength=-1;
+	int length=strlen(client_Control_Info);
+	int i=0;
+	for(i=3;i<length;i++)
+	    format_client_Info[i-3]=client_Control_Info[i];
+	format_client_Info[i-5]='\0';
+	                                                                                                       
+    if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
+    {
+	    getcwd(client_dir, DIR_INFO);
+	    dirlength=strlen(client_dir);
+	    client_dir[dirlength]='/';
+    }
+	                                                                                                                                                                                                            
+	for(i=3;i<length;i++)
+    {
+    	client_dir[dirlength+i-2]=client_Control_Info[i];
+    }
+	client_dir[dirlength+i-4]='\0';
+	                                                                                                       
+	if (rmdir(client_dir) >= 0)
+	{
+	    printf( " \"%s\" is deleted successfully.\r\n", client_dir);                
+		send_client_info(client_sock, rmd_info, strlen(rmd_info));
+	}
+    else
+    {
+        snprintf(rmd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
+        perror("rmdir():");
+        send_client_info(client_sock, rmd_info, strlen(rmd_info));
+    }
 }
 //make dir
 void handle_mkd(int client_sock)
 {
-        char    mkd_info[MSG_INFO];
-        char    tmp_dir[DIR_INFO];
-        char    client_dir[DIR_INFO];
-                                                                                                               
-        char t_dir[DIR_INFO];
-        int dirlength=-1;
-        int length=strlen(client_Control_Info);
-        int i=0;
-        for(i=4;i<length;i++)
-                        format_client_Info[i-4]=client_Control_Info[i];
-                format_client_Info[i-6]='\0';
-                                                                                                               
-                if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
-                {
-                getcwd(client_dir, DIR_INFO);
-                dirlength=strlen(client_dir);
-                client_dir[dirlength]='/';
-                }
-                                                                                                                  
-        for(i=4;i<length;i++)
-                {
-                        client_dir[dirlength+i-3]=client_Control_Info[i];
-                }
-                client_dir[dirlength+i-5]='\0';
-                                                                                                               
-                // printf("%s\r\n",client_dir);
- 		if (mkdir(client_dir,0644) >= 0)
-                {
-                        printf( " \"%s\" is created successfully.\r\n", client_dir);
-                        send_client_info(client_sock, mkd_info, strlen(mkd_info));
-                }
-                else
-                {
-                        snprintf(mkd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
-                        perror("mkdir():");
-                        send_client_info(client_sock, mkd_info, strlen(mkd_info));
-                }
+	char mkd_info[MSG_INFO];
+	char tmp_dir[DIR_INFO];
+	char client_dir[DIR_INFO];
+	                                                                                                       
+	char t_dir[DIR_INFO];
+	int dirlength=-1;
+	int length=strlen(client_Control_Info);
+	int i=0;
+	for(i=3;i<length;i++)
+	    format_client_Info[i-3]=client_Control_Info[i];
+	format_client_Info[i-5]='\0';
+	                                                                                                       
+    if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
+    {
+        getcwd(client_dir, DIR_INFO);
+        dirlength=strlen(client_dir);
+        client_dir[dirlength]='/';
+    }
+	                                                                                                          
+	for(i=3;i<length;i++)
+    {
+        client_dir[dirlength+i-2]=client_Control_Info[i];
+    }
+    client_dir[dirlength+i-4]='\0';
+	                                                                                                       
+	       
+	if (mkdir(client_dir,0644) >= 0)
+    {
+            printf( " \"%s\" is created successfully.\r\n", client_dir);
+            send_client_info(client_sock, mkd_info, strlen(mkd_info));
+    }
+    else
+    {
+            snprintf(mkd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
+            perror("mkdir():");
+            send_client_info(client_sock, mkd_info, strlen(mkd_info));
+    }
 }
 
 
