@@ -301,7 +301,7 @@ void ftp_list()
 		printf("creat data sock error!\n");
 		return;
 	}
-	ftp_get_reply(sock_control);
+	//ftp_get_reply(sock_control);
 	ftp_send_cmd("LIST", NULL, sock_control);
 	ftp_get_reply(sock_control);
 	if(mode)
@@ -911,84 +911,84 @@ int ftp_usr_cmd(char * usr_cmd)
 }
 void open_srv()
 {
-        char usr_cmd[1024];
-        int cmd_flag;
-        while(1)
+	char usr_cmd[1024];
+	int cmd_flag;
+	while(1)
+	{
+        printf("ftp_cli>");
+        fgets(usr_cmd,510,stdin);
+        fflush(stdin);
+        if(usr_cmd[0] == '\n')
+        	continue;
+        usr_cmd[strlen(usr_cmd)-1] = '\0';
+        cmd_flag = ftp_usr_cmd(usr_cmd);
+        if(cmd_flag == 15)
         {
-                printf("ftp_cli>");
-                fgets(usr_cmd,510,stdin);
-                fflush(stdin);
-                if(usr_cmd[0] == '\n')
-                        continue;
-                usr_cmd[strlen(usr_cmd)-1] = '\0';
-                cmd_flag = ftp_usr_cmd(usr_cmd);
-                if(cmd_flag == 15)
+            char *cmd = strchr(usr_cmd,' ');
+            char dress_ftp[1024];
+            if(cmd == NULL)
+            {
+                printf("command error!\n");
+                show_help();
+                return;
+            }
+        	else
+            {
+                while(*cmd == ' ')
+                	cmd++;
+            }
+            if(cmd == NULL||cmd == '\0')
+            {
+                printf("command error!\n");
+                return;
+            }
+            else
+            {
+                char * dr = "127.0.0.1";
+                strncpy(dress_ftp,cmd,strlen(cmd));
+                dress_ftp[strlen(cmd)] = '\0';
+                printf("%s",dress_ftp);
+                //if(dress_ftp == "127.0.0.1")
+                if(1)
                 {
-                        char *cmd = strchr(usr_cmd,' ');
-                        char dress_ftp[1024];
-                        if(cmd == NULL)
-                        {
-                                printf("command error!\n");
-                                show_help();
-                                return;
-                        }
-	                else
-                        {
-                                while(*cmd == ' ')
-                                        cmd++;
-                        }
-                        if(cmd == NULL||cmd == '\0')
-                        {
-                                printf("command error!\n");
-                                return;
-                        }
-                        else
-                        {
-                                char * dr = "127.0.0.1";
-                                strncpy(dress_ftp,cmd,strlen(cmd));
-                                dress_ftp[strlen(cmd)] = '\0';
-                                printf("%s",dress_ftp);
-                                //if(dress_ftp == "127.0.0.1")
-                                if(1)
-                                {
-                                        printf("Connect Seccessed!\n");
-                                        start_ftp_cmd(dr,DEFAULT_FTP_PORT);
-                                }
-                               else
-                                {
-                                        printf("Inviable Server Dress!\n");
-                                }
-                        }
+                    printf("Connect Seccessed!\n");
+                    start_ftp_cmd(dress_ftp,DEFAULT_FTP_PORT);
                 }
                 else
                 {
-                        switch(cmd_flag)
-                        {
-                                case 11:
-                                        local_list();
-                                        memset(usr_cmd,'\0',sizeof(usr_cmd));
-                                        break;
-                                case 12:
-                                        local_pwd();
-                                        memset(usr_cmd,'\0',sizeof(usr_cmd));
-                                        break;
-                                case 13:
-                                        local_cd(usr_cmd);
-                                        memset(usr_cmd,'\0',sizeof(usr_cmd));
-                                        break;
-                                case 6://quit
-                                        printf("BYE TO WEILIQI FTP!\n");
-					exit(0);
-                                        break;
-                                default:
-                                        printf("command error!\n");
-                                        show_help();
-                                        memset(usr_cmd,'\0',sizeof(usr_cmd));
-                                        break;
-                        }
+                    printf("Inviable Server Dress!\n");
                 }
+            }
         }
-                                                                                
+        else
+        {
+            switch(cmd_flag)
+            {
+                case 11:
+                    local_list();
+                    memset(usr_cmd,'\0',sizeof(usr_cmd));
+                    break;
+                case 12:
+                    local_pwd();
+                    memset(usr_cmd,'\0',sizeof(usr_cmd));
+                    break;
+                case 13:
+                    local_cd(usr_cmd);
+                    memset(usr_cmd,'\0',sizeof(usr_cmd));
+                    break;
+                case 6://quit
+                    printf("BYE TO WEILIQI FTP!\n");
+					exit(0);
+                    break;
+                default:
+                    printf("command error!\n");
+                    show_help();
+                    memset(usr_cmd,'\0',sizeof(usr_cmd));
+                    break;
+            }
+        }
+	}
+	                                                                        
 }
 
 
@@ -1095,7 +1095,6 @@ int start_ftp_cmd(char * host_ip_addr, int port)
 /////////////////////////////////////////////
 void open_ftpsrv()
 {
-
 	char usr_cmd[1024];
 	int cmd_flag;
 	while(1)
@@ -1137,7 +1136,7 @@ void open_ftpsrv()
 				if(1)
 				{
 					printf("Connect Seccessed!\n");
-					start_ftp_cmd(dress_ftp ,DEFAULT_FTP_PORT);
+					start_ftp_cmd(dress_ftp,DEFAULT_FTP_PORT);
 				}
 				else
 				{

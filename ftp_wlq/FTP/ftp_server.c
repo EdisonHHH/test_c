@@ -131,15 +131,15 @@ void do_client_work(int client_sock,struct sockaddr_in client)
 	{
 		if((strncmp("quit", client_Control_Info, 4) == 0)||(strncmp("QUIT", client_Control_Info, 4) == 0))
 		{	
-				send_client_info(client_sock, serverInfo221, strlen(serverInfo221));
-				break;
+			send_client_info(client_sock, serverInfo221, strlen(serverInfo221));
+			break;
 		}
 		else if((strncmp("close",client_Control_Info,5) == 0)||(strncmp("CLOSE",client_Control_Info,5) == 0))
 		{
 			printf("Client Quit!\n");
 			//shutdown(ftp_server_sock,SHUT_WR);
 			//shutdown(ftp_data_sock,SHUT_RDWR);
-                        shutdown(client_sock,SHUT_WR);
+            shutdown(client_sock,SHUT_WR);
 			//close(client_sock);
 		}
 		
@@ -147,16 +147,16 @@ void do_client_work(int client_sock,struct sockaddr_in client)
 		{	
 			char 	pwd_info[MSG_INFO];
    			char 	tmp_dir[DIR_INFO];
-    			snprintf(pwd_info, MSG_INFO, "257 \"%s\" is current location.\r\n", getcwd(tmp_dir, DIR_INFO));
-				send_client_info(client_sock, pwd_info, strlen(pwd_info));
+			snprintf(pwd_info, MSG_INFO, "257 \"%s\" is current location.\r\n", getcwd(tmp_dir, DIR_INFO));
+			send_client_info(client_sock, pwd_info, strlen(pwd_info));
 		}
 		else if(strncmp("cwd", client_Control_Info, 3) == 0||(strncmp("CWD", client_Control_Info, 3) == 0))
 		{
-				handle_cwd(client_sock);
+			handle_cwd(client_sock);
 		}
 		else if(strncmp("mkd",client_Control_Info,3) ==0||(strncmp("MKD",client_Control_Info,3)==0))
 		{
-				handle_mkd(client_sock);
+			handle_mkd(client_sock);
 		}
 		else if(strncmp("rmd",client_Control_Info,3)==0||(strncmp("RMD",client_Control_Info,3)==0))
 		{
@@ -164,33 +164,32 @@ void do_client_work(int client_sock,struct sockaddr_in client)
 		}
 		else if(strncmp("dele",client_Control_Info,4)==0||(strncmp("DELE",client_Control_Info,4)==0))
 		{
-				handle_del(client_sock);
-			 
+			handle_del(client_sock);	 
 		}
 		else if(strncmp("pasv", client_Control_Info, 4) == 0||(strncmp("PASV", client_Control_Info, 4) == 0))
 		{
-			   handle_pasv(client_sock,client);
+			handle_pasv(client_sock,client);
 		}
 		else if(strncmp("list", client_Control_Info, 4) == 0||(strncmp("LIST", client_Control_Info, 4) == 0))
 		{
-			   handle_list(client_sock);
-			   send_client_info(client_sock,serverInfo226, strlen(serverInfo226));	
+			handle_list(client_sock);
+			send_client_info(client_sock,serverInfo226, strlen(serverInfo226));	
 		}
 		else if(strncmp("type", client_Control_Info, 4) == 0||(strncmp("TYPE", client_Control_Info, 4) == 0))
 		{
-				if(strncmp("type I", client_Control_Info, 6) == 0||(strncmp("TYPE I", client_Control_Info, 6) == 0))
-			  			translate_data_mode=FILE_TRANS_MODE_BIN;
-			  	send_client_info(client_sock, serverInfo200, strlen(serverInfo200));
+			if(strncmp("type I", client_Control_Info, 6) == 0||(strncmp("TYPE I", client_Control_Info, 6) == 0))
+		  			translate_data_mode=FILE_TRANS_MODE_BIN;
+		  	send_client_info(client_sock, serverInfo200, strlen(serverInfo200));
 		}
 		else if(strncmp("retr", client_Control_Info, 4) == 0||(strncmp("RETR", client_Control_Info, 4) == 0))
 		{
-				handle_file(client_sock);
-				send_client_info(client_sock,serverInfo226, strlen(serverInfo226));	
+			handle_file(client_sock);
+			send_client_info(client_sock,serverInfo226, strlen(serverInfo226));	
 		}
 		else if(strncmp("stor", client_Control_Info, 4) == 0||(strncmp("STOR", client_Control_Info, 4) == 0))
 		{
-				handle_file(client_sock);
-				send_client_info(client_sock,serverInfo226, strlen(serverInfo226));	
+			handle_file(client_sock);
+			send_client_info(client_sock,serverInfo226, strlen(serverInfo226));	
 		}
 		else if(strncmp("syst", client_Control_Info, 4) == 0||(strncmp("SYST", client_Control_Info, 4) == 0))
 		{
@@ -360,38 +359,34 @@ void handle_cwd(int client_sock)
    	int length=strlen(client_Control_Info);
      	int i=0; 	
    	for(i=4;i<length;i++)
-			format_client_Info[i-4]=client_Control_Info[i];
-		format_client_Info[i-6]='\0';
+		format_client_Info[i-4]=client_Control_Info[i];
+	format_client_Info[i-6]='\0';
   
-		if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
-		{
-   		getcwd(client_dir, DIR_INFO);
-   		dirlength=strlen(client_dir);
-   		client_dir[dirlength]='/';
-		}
+	if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
+	{
+		getcwd(client_dir, DIR_INFO);
+		dirlength=strlen(client_dir);
+		client_dir[dirlength]='/';
+	}
 
 
    	for(i=4;i<length;i++)
-   		{
-   			client_dir[dirlength+i-3]=client_Control_Info[i];
-   		}
-		client_dir[dirlength+i-5]='\0';
-		
-		// printf("%s\r\n",client_dir);
-		//printf("%s\r\n",client_Control_Info);	
-		//printf("%s\r\n",getcwd(t_dir, DIR_INFO));	
+	{
+		client_dir[dirlength+i-3]=client_Control_Info[i];
+	}
+	client_dir[dirlength+i-5]='\0';
 		
    	if (chdir(client_dir) >= 0)
-    		{
-    		snprintf(cwd_info, MSG_INFO, "257 \"%s\" is current location.\r\n", getcwd(tmp_dir, DIR_INFO));
-    		send_client_info(client_sock, cwd_info, strlen(cwd_info));
-    		}
-  		else
-    		{
- 			snprintf(cwd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
-  			perror("chdir():");
-  			send_client_info(client_sock, cwd_info, strlen(cwd_info));
-    		}    			
+	{
+		snprintf(cwd_info, MSG_INFO, "257 \"%s\" is current location.\r\n", getcwd(tmp_dir, DIR_INFO));
+		send_client_info(client_sock, cwd_info, strlen(cwd_info));
+	}
+  	else
+	{
+		snprintf(cwd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
+		perror("chdir():");
+		send_client_info(client_sock, cwd_info, strlen(cwd_info));
+	}    			
 }
 //delete dir
 void handle_rmd(int client_sock)
@@ -423,7 +418,7 @@ void handle_rmd(int client_sock)
 	                                                                                                       
 	if (rmdir(client_dir) >= 0)
 	{
-	    printf( " \"%s\" is deleted successfully.\r\n", client_dir);                
+	    snprintf(rmd_info,MSG_INFO, " \"%s\" is deleted successfully.\r\n", client_dir);  
 		send_client_info(client_sock, rmd_info, strlen(rmd_info));
 	}
     else
@@ -464,14 +459,14 @@ void handle_mkd(int client_sock)
 	       
 	if (mkdir(client_dir,0644) >= 0)
     {
-            printf( " \"%s\" is created successfully.\r\n", client_dir);
-            send_client_info(client_sock, mkd_info, strlen(mkd_info));
+        snprintf(mkd_info,MSG_INFO, " \"%s\" is created successfully.\r\n", client_dir);
+        send_client_info(client_sock, mkd_info, strlen(mkd_info));
     }
     else
     {
-            snprintf(mkd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
-            perror("mkdir():");
-            send_client_info(client_sock, mkd_info, strlen(mkd_info));
+        snprintf(mkd_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
+        perror("mkdir():");
+        send_client_info(client_sock, mkd_info, strlen(mkd_info));
     }
 }
 
@@ -479,7 +474,7 @@ void handle_mkd(int client_sock)
 
 void handle_list(int client_sock)
 {
-        send_client_info(client_sock, serverInfo150, strlen(serverInfo150));
+    send_client_info(client_sock, serverInfo150, strlen(serverInfo150));
    
    	int t_data_sock;
 	struct sockaddr_in client;
@@ -496,22 +491,18 @@ void handle_list(int client_sock)
 	snprintf(list_cmd_info, DIR_INFO, "ls -l %s", getcwd(t_dir, DIR_INFO));
 	
    	if ((pipe_fp = popen(list_cmd_info, "r")) == NULL)
-    	{
+	{
 		printf("pipe open error in cmd_list\n");
 		return ;
-    	}
-   	printf("pipe open successfully!, cmd is %s\n", list_cmd_info);
+	}
 
 	char t_char;
    	while ((t_char = fgetc(pipe_fp)) != EOF)
-    	{
-		printf("%c", t_char);
+	{
 		write(t_data_sock, &t_char, 1);
-    	}
+	}
    	pclose(pipe_fp);
-   	printf("close pipe successfully!\n");	
    	close(t_data_sock);	
-	printf("%s close data successfully!\n",serverInfo226);	
 	close(ftp_data_sock);	
 }
 
@@ -519,26 +510,22 @@ void handle_pasv(int client_sock,struct sockaddr_in client)
 {
 
 	char pasv_msg[MSG_INFO];
-	char	port_str[8];
-   	char	addr_info_str[30];
+	char port_str[8];
+   	char addr_info_str[30];
 	struct sockaddr_in user_data_addr;
 	user_data_addr=create_date_sock();
 	
-	int		tmp_port1;
-   int		tmp_port2;
-   tmp_port1 = ntohs(user_data_addr.sin_port) / 256;
-   tmp_port2 = ntohs(user_data_addr.sin_port) % 256;
-   long ipNum=0;//=inet_addr(inet_ntoa(client.sin_addr));
-   //printf("%s  %d\r\n",inet_ntoa(client.sin_addr),ipNum);
-   																						
-   snprintf(addr_info_str, sizeof(addr_info_str), "%ld,%ld,%ld,%ld,", ipNum&0xff,
-   																					ipNum>>8&0xff,
-   																					ipNum>>16&0xff,
-																						ipNum>>24&0xff);
-   snprintf(port_str, sizeof(port_str), "%d,%d", tmp_port1, tmp_port2);
-   strcat(addr_info_str, port_str);
-   snprintf(pasv_msg, MSG_INFO, "227 Entering Passive Mode (%s).\r\n", addr_info_str);
-   send_client_info(client_sock, pasv_msg, strlen(pasv_msg));
+	int	tmp_port1;
+	int	tmp_port2;
+	tmp_port1 = ntohs(user_data_addr.sin_port) / 256;
+	tmp_port2 = ntohs(user_data_addr.sin_port) % 256;
+	long ipNum=0;
+																					
+	snprintf(addr_info_str, sizeof(addr_info_str), "%ld,%ld,%ld,%ld,", ipNum&0xff,ipNum>>8&0xff,ipNum>>16&0xff,ipNum>>24&0xff);
+	snprintf(port_str, sizeof(port_str), "%d,%d", tmp_port1, tmp_port2);
+	strcat(addr_info_str, port_str);
+	snprintf(pasv_msg, MSG_INFO, "227 Entering Passive Mode (%s).\r\n", addr_info_str);
+	send_client_info(client_sock, pasv_msg, strlen(pasv_msg));
 
 }
 struct sockaddr_in create_date_sock()
@@ -573,8 +560,8 @@ struct sockaddr_in create_date_sock()
 void handle_file(int client_sock)
 {
 	send_client_info(client_sock, serverInfo150, strlen(serverInfo150));
-   
-   int t_data_sock;
+
+	int t_data_sock;
 	struct sockaddr_in client;
 	int sin_size=sizeof(struct sockaddr_in);
 	if((t_data_sock=accept(ftp_data_sock,(struct sockaddr *)&client,&sin_size))==-1)
@@ -588,33 +575,33 @@ void handle_file(int client_sock)
 		format_client_Info[i-5]=client_Control_Info[i];
 	format_client_Info[i-7]='\0';
 
-	
+
 	FILE* fp;
 	int file_fd;
 	int n;
 	char t_dir[DIR_INFO];
-	
+
 	char file_info[DIR_INFO];
-	
+
 	snprintf(file_info, DIR_INFO, "%s/%s", getcwd(t_dir, DIR_INFO),format_client_Info);
-	
+
 	//printf("%s\r\n",file_info);
 	//printf("%s\r\n",format_client_Info);	
 	//printf("%s\r\n",getcwd(t_dir, DIR_INFO));	
 	char file_mode[3];
 	if(strncmp("retr", client_Control_Info, 4) == 0||(strncmp("RETR", client_Control_Info, 4) == 0))
-   	{
-   	file_mode[0]='r';
-   	file_mode[1]='b';
-   	file_mode[2]='\0';
-   	}
-   	else  
-   	{
-   	file_mode[0]='a';
-   	file_mode[1]='b';
-   	file_mode[2]='\0';
-   	}
-	
+	{
+		file_mode[0]='r';
+		file_mode[1]='b';
+		file_mode[2]='\0';
+	}
+	else  
+	{
+		file_mode[0]='a';
+		file_mode[1]='b';
+		file_mode[2]='\0';
+	}
+
 	if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-1)==0)
 		fp = fopen(format_client_Info, file_mode);
 	else
@@ -622,25 +609,25 @@ void handle_file(int client_sock)
 		
 	if (fp == NULL)
 	{
-			printf("open file error:%s\r\n",strerror(errno));
-			char 	cwd_info[MSG_INFO];
-			snprintf(cwd_info, MSG_INFO, "550 %s :%s\r\n",format_client_Info,strerror(errno));
-  			send_client_info(client_sock, cwd_info, strlen(cwd_info));
-  			close(t_data_sock);
-   		close(ftp_data_sock);	
-			return;
+		printf("open file error:%s\r\n",strerror(errno));
+		char cwd_info[MSG_INFO];
+		snprintf(cwd_info, MSG_INFO, "550 %s :%s\r\n",format_client_Info,strerror(errno));
+		send_client_info(client_sock, cwd_info, strlen(cwd_info));
+		close(t_data_sock);
+		close(ftp_data_sock);	
+		return;
 	}
-   int cmd_sock=fileno(fp);
-   memset(client_Data_Info, 0, MAX_INFO);	
-   if(strncmp("retr", client_Control_Info, 4) == 0||(strncmp("RETR", client_Control_Info, 4) == 0))
-   	{
-  		 while ((n = read(cmd_sock, client_Data_Info, MAX_INFO)) > 0)
+	int cmd_sock=fileno(fp);
+	memset(client_Data_Info, 0, MAX_INFO);	
+	if(strncmp("retr", client_Control_Info, 4) == 0||(strncmp("RETR", client_Control_Info, 4) == 0))
+	{
+		while ((n = read(cmd_sock, client_Data_Info, MAX_INFO)) > 0)
 		{
-	    	if (write(t_data_sock, client_Data_Info, n) != n)
-	    		{
+			if (write(t_data_sock, client_Data_Info, n) != n)
+			{
 				printf("retr transfer error\n");
 				return;
-	  		}
+			}
 		}
 	}
 	else /*if(strncmp("stor",client_Control_Info,4)==0||(strncmp("STOR",client_Control_Info,4)==0))*/
@@ -648,16 +635,16 @@ void handle_file(int client_sock)
 		while ((n = read(t_data_sock, client_Data_Info, MAX_INFO)) > 0)
 		{
 	    	if (write(cmd_sock, client_Data_Info, n) != n)
-	    		{
+	    	{
 				printf("stor transfer error\n");
 				return;
 	  		}
 		}
 	}
-	
+
 	fclose(fp);
-   close(t_data_sock);
-   close(ftp_data_sock);	
+	close(t_data_sock);
+	close(ftp_data_sock);	
 }
 //delete file
 void handle_del(int client_sock)
@@ -674,43 +661,43 @@ void handle_del(int client_sock)
 
 */
   
-      	char    del_info[MSG_INFO];
-        char    tmp_file[DIR_INFO];
-        char    client_dir[DIR_INFO];
-                                                                                                               
-        char t_dir[DIR_INFO];
-        int dirlength=-1;
-        int length=strlen(client_Control_Info);
-        int i=0;
-        for(i=4;i<length;i++)
-                        format_client_Info[i-4]=client_Control_Info[i];
-                format_client_Info[i-6]='\0';
-                                                                                                               
-                if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
-                {
-                getcwd(client_dir, DIR_INFO);
-                dirlength=strlen(client_dir);
-                client_dir[dirlength]='/';
-                }
-                                                                                                               
-                                                                                                               
-        for(i=4;i<length;i++)
-                {
-                        client_dir[dirlength+i-3]=client_Control_Info[i];
-                }
-                client_dir[dirlength+i-5]='\0';
-                               // printf("%s\r\n",client_dir);
-                if (unlink(client_dir) >= 0)
-                {
-                        printf( " \"%s\" is deleted successfully.\r\n", client_dir);
-                        send_client_info(client_sock, del_info, strlen(del_info));
-                }
-                else
-                {
-                        snprintf(del_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
-                        perror("unlink():");
-                        send_client_info(client_sock, del_info, strlen(del_info));
-               }
+	char del_info[MSG_INFO];
+	char tmp_file[DIR_INFO];
+	char client_dir[DIR_INFO];
+	                                                                                                       
+	char t_dir[DIR_INFO];
+	int dirlength=-1;
+	int length=strlen(client_Control_Info);
+	int i=0;
+	for(i=4;i<length;i++)
+    	format_client_Info[i-4]=client_Control_Info[i];
+    format_client_Info[i-6]='\0';
+                                                                                                       
+    if(strncmp(getcwd(t_dir, DIR_INFO),format_client_Info,strlen(getcwd(t_dir, DIR_INFO))-10)!=0)
+    {
+	    getcwd(client_dir, DIR_INFO);
+	    dirlength=strlen(client_dir);
+	    client_dir[dirlength]='/';
+    }
+                                                                                                       
+                                                                                                       
+	for(i=4;i<length;i++)
+    {
+    	client_dir[dirlength+i-3]=client_Control_Info[i];
+    }
+    client_dir[dirlength+i-5]='\0';
+                      
+    if (unlink(client_dir) >= 0)
+    {
+        snprintf(del_info, MSG_INFO, " \"%s\" is deleted successfully.\r\n", client_dir);
+        send_client_info(client_sock, del_info, strlen(del_info));
+    }
+    else
+    {
+        snprintf(del_info, MSG_INFO, "550 %s :%s\r\n",client_dir,strerror(errno));
+        perror("unlink():");
+        send_client_info(client_sock, del_info, strlen(del_info));
+   }
 
 }
 
