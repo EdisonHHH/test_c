@@ -719,7 +719,7 @@ int recv_client_info(int client_sock)
 			return;
 	}
 	client_Control_Info[num]='\0';
-//	printf("Client %d Message:%s\n",pthread_self(),client_Control_Info);
+	printf("Client Message:%s\n",client_Control_Info);
 	if(strncmp("USER", client_Control_Info, 4) == 0||strncmp("user", client_Control_Info, 4) == 0)return 2;
 	return 1;
 }
