@@ -1,0 +1,10 @@
+#!/bin/bash
+for((a=1;a<=9;a++))
+do
+	for((b=1;b<=a;b++))
+	do
+		c=$[$a*$b]
+		echo -n " $b*$a=$c"
+	done
+	echo " "
+done

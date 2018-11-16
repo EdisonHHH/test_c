@@ -1,0 +1,16 @@
+#!/bin/bash
+IFSOLD=$IFS
+IFS=$'\n'
+file="states"
+
+for state in `cat $file`
+do
+	echo "Visit beautiful $state"
+done
+
+IFS=$IFSOLD
+
+for state in `cat $file`
+do
+	echo "Visit beautiful $state"
+done
