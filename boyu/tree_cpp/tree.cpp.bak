@@ -324,10 +324,6 @@ int getWidth(BinTreeNode *tree)
     return w;
 }
 
-int getRootPos(BinTreeNode *tree,int x)
-{
-	return tree->llink==NULL? x : x + getWidth(tree->llink);
-}
 int main()
 {
 	BinTreeNode *tree=NULL;
