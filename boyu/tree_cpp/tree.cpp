@@ -304,6 +304,15 @@ int len_int(int x)
 	}
 	return len;
 }
+void int_to_str(int x,char *str)
+{
+	int len=len_int(x);
+	while(x)
+	{
+		str[--len]=x%10+'0';
+		x/=10;
+	}
+}
 int getHeight(BinTreeNode *tree)
 {
 	if(tree==NULL)
@@ -328,6 +337,55 @@ int getRootPos(BinTreeNode *tree,int x)
 {
 	return tree->llink==NULL? x : x + getWidth(tree->llink);
 }
+
+void printInBuf(BinTreeNode *tree,char **buf, int x, int y)
+{
+	//String sv = "" + v;
+	int root_len=len_int(tree->info);
+	int p1 = tree->llink==NULL? x : getRootPos(tree->llink,x);
+	int p2 = getRootPos(tree,x);
+	int p3 = tree->rlink==NULL? p2 : getRootPos(tree->rlink,p2+root_len);
+
+	buf[y][p2] = '|';
+	for(int i=p1; i<=p3; i++) buf[y+1][i]='-';
+
+	//for(int i=0; i<sv.length(); i++) buf[y+1][i+p2]=sv.charAt(i);  
+	int_to_str(tree->info,&buf[y+1][p2]);
+
+	if(p1<p2) buf[y+1][p1] = '/';
+	if(p3>p2) buf[y+1][p3] = '\\';
+
+	if(tree->llink!=NULL) printInBuf(tree->llink,buf,x,y+2);
+	if(tree->rlink!=NULL) printInBuf(tree->rlink,buf,p2+root_len,y+2);
+}
+
+ 
+void showBuf(char **buf,int x,int y)
+{
+	for(int i=0; i<y; i++){
+	    for(int j=0; j<x; j++)
+	        cout<<(buf[i][j]==0? ' ':buf[i][j]);
+	    cout<<endl;
+	}
+}
+    
+void show(BinTreeNode *tree)
+{
+	int x=getWidth(tree);
+	int y=getHeight(tree);
+	char **buf=new char*[y];
+	for(int i=0;i<y;i++)
+		buf[i]=new char[x];
+	for(int i=0;i<y;i++)
+		for(int j=0;j<x;j++)
+			buf[i][j]=0;
+	printInBuf(tree,buf,0,0);
+	showBuf(buf,x,y);
+	for(int i=0;i<y;i++)
+		delete[]buf[i];
+	delete[]buf;
+}
+
 int main()
 {
 	BinTreeNode *tree=NULL;
@@ -343,6 +401,7 @@ int main()
 	postOrder(tree);
 	cout<<endl;
 	nPostOrder(tree);
+	show(tree);
 	destroyTree(&tree);
 	return 0;
 }
