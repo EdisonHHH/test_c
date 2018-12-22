@@ -12,28 +12,28 @@ struct RBNode
 };
 class RBTree
 {
-	static int max(int x,int y);                        //获得两个数中大的数
-	static int len_int(int x);                          //获得节点的长度（包含颜色标记）
-	static void int_to_str(int x,char *str,bool color); //降结点键值转换为字符数组（包含颜色标记）
-	static void showBuf(char **buf,int x,int y);        //打印二维字符数组（映射的红黑树）
+	static int max(int x,int y);
+	static int len_int(int x);
+	static void int_to_str(int x,char *str,bool color);
+	static void showBuf(char **buf,int x,int y);
 public:
 	RBTree();
 	~RBTree();
-	int insertNode(int key);                            //插入一个结点
-	int deleteNode(int key);                            //删除一个结点
+	int insertNode(int key);
+	int deleteNode(int key);
 
 private:
-	void insertFixup(RBNode *pnode);                    //插入结点后调整
-	void deleteFixup(RBNode *pnode);                    //删除结点后调整
-	RBNode *rotate_left(RBNode *a);                     //左旋
-	RBNode *rotate_right(RBNode *a);                    //右旋
-	RBNode *createNode(int key);                        //生成一个结点
-	void destroy(RBNode *pnode);                        //销毁一棵树
-	RBNode *root;                                       //根结点
+	void insertFixup(RBNode *pnode);
+	void deleteFixup(RBNode *pnode);
+	RBNode *rotate_left(RBNode *a);
+	RBNode *rotate_right(RBNode *a);
+	RBNode *createNode(int key);
+	void destroy(RBNode *pnode);
+	RBNode *root;
 	RBNode *m_null;
 	
 public:
-	void show();                                        //图形显示一棵树
+	void show();
 private:
 	int getHeight(RBNode *tree);
 	int getWidth(RBNode *tree);
@@ -448,6 +448,8 @@ void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 	if(tree->rlink!=m_null)printInBuf( tree->rlink,buf,p2+root_len,y+2);
 }
 
+ 
+  
 void RBTree::show()
 {
 	RBNode *tree=root;
