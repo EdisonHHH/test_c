@@ -12,28 +12,28 @@ struct RBNode
 };
 class RBTree
 {
-	static int max(int x,int y);
-	static int len_int(int x);
-	static void int_to_str(int x,char *str,bool color);
-	static void showBuf(char **buf,int x,int y);
+	static int max(int x,int y);                        //获得两个数中大的数
+	static int len_int(int x);                          //获得节点的长度（包含颜色标记）
+	static void int_to_str(int x,char *str,bool color); //降结点键值转换为字符数组（包含颜色标记）
+	static void showBuf(char **buf,int x,int y);        //打印二维字符数组（映射的红黑树）
 public:
 	RBTree();
 	~RBTree();
-	int insertNode(int key);
-	int deleteNode(int key);
+	int insertNode(int key);                            //插入一个结点
+	int deleteNode(int key);                            //删除一个结点
 
 private:
-	void insertFixup(RBNode *pnode);
-	void deleteFixup(RBNode *pnode);
-	RBNode *rotate_left(RBNode *a);
-	RBNode *rotate_right(RBNode *a);
-	RBNode *createNode(int key);
-	void destroy(RBNode *pnode);
-	RBNode *root;
+	void insertFixup(RBNode *pnode);                    //插入结点后调整
+	void deleteFixup(RBNode *pnode);                    //删除结点后调整
+	RBNode *rotate_left(RBNode *a);                     //左旋
+	RBNode *rotate_right(RBNode *a);                    //右旋
+	RBNode *createNode(int key);                        //生成一个结点
+	void destroy(RBNode *pnode);                        //销毁一棵树
+	RBNode *root;                                       //根结点
 	RBNode *m_null;
 	
 public:
-	void show();
+	void show();                                        //图形显示一棵树
 private:
 	int getHeight(RBNode *tree);
 	int getWidth(RBNode *tree);
@@ -244,7 +244,7 @@ void RBTree::deleteFixup(RBNode *pnode)
 			}
 			else
 			{
-				if (sibling->rlink == black)
+				if (sibling->rlink->color == black)
 				{
 					sibling->color = red;
 					sibling->llink->color = black;
@@ -261,7 +261,7 @@ void RBTree::deleteFixup(RBNode *pnode)
 		else
 		{
 			sibling = parent->llink;
-			if (sibling->color = red)
+			if (sibling->color == red)
 			{
 				sibling->color = black;
 				parent->color = red;
@@ -393,24 +393,23 @@ void RBTree::int_to_str(int x,char *str,bool color)
 	else if(color==black)
 		str[0]='B';
 }
+ofstream output;
 void RBTree::showBuf(char **buf,int x,int y)
 {
-	ofstream output("1");
+	
 	for(int i=0; i<y; i++){
 	    for(int j=0; j<x; j++)
 	        output<<(buf[i][j]==0? ' ':buf[i][j]);
 	    output<<endl;
 	}
+	output<<"=================================================================================="<<endl;
 }
   
 int RBTree::getHeight(RBNode *tree)
 {
 	if(tree==m_null)
 		return 0;
-    int h = 2;
-    int hl = tree->llink==m_null? 0 : getHeight(tree->llink);
-    int hr = tree->rlink==m_null? 0 : getHeight(tree->rlink);
-    return h +max(hl,hr);
+    return 2 +max(getHeight(tree->llink),getHeight(tree->rlink));
 }
 
 int RBTree::getWidth(RBNode *tree)
@@ -418,24 +417,20 @@ int RBTree::getWidth(RBNode *tree)
 
 	if(tree==m_null)
 		return 0;
-    int w = len_int(tree->key);
-    if(tree->llink!=m_null) w += getWidth(tree->llink);
-    if(tree->rlink!=m_null) w += getWidth(tree->rlink);
-    return w;
+    return len_int(tree->key)+getWidth(tree->llink)+getWidth(tree->rlink);
 }
 
 int RBTree::getRootPos(RBNode *tree,int x)
 {
-	
 	if(tree==m_null)
-		return 0;
-	return tree->llink==m_null? x : x + getWidth(tree->llink);
+		return x;
+	return x + getWidth(tree->llink);
 }
 
 void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 {
 	int root_len=len_int(tree->key);
-	int p1 = tree->llink==m_null? x : getRootPos(tree->llink,x);
+	int p1 = getRootPos(tree->llink,x);
 	int p2 = getRootPos(tree,x);
 	int p3 = tree->rlink==m_null? p2 : getRootPos(tree->rlink,p2+root_len);
 
@@ -448,11 +443,11 @@ void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 	if(tree->rlink!=m_null)printInBuf( tree->rlink,buf,p2+root_len,y+2);
 }
 
- 
-  
 void RBTree::show()
 {
 	RBNode *tree=root;
+	if(tree==m_null)
+		return;
 	int x=getWidth(tree);
 	int y=getHeight(tree);
 	char **buf=new char*[y];
@@ -472,17 +467,31 @@ void RBTree::show()
 #define random(i) (rand()%i)
 int main()
 {
+	output.open("1");
 	RBTree tree;
 	int num=0;
-	while(num<60)
+	while(num<N)
 	{
 		int buf=random(N);
 		if(buf==0) buf=N;
 		if(tree.insertNode(buf)==0)
+		{
 			num++;
+			tree.show();
+		}
 	}
 
-	tree.show();
+	num=0;
+	while(num<N)
+	{
+		int buf=random(N);
+		if(buf==0) buf=N;
+		if(tree.deleteNode(buf)==0)
+		{
+			num++;
+			tree.show();
+		}
+	}
 	
 	return 0;
 }

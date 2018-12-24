@@ -244,7 +244,7 @@ void RBTree::deleteFixup(RBNode *pnode)
 			}
 			else
 			{
-				if (sibling->rlink == black)
+				if (sibling->rlink->color == black)
 				{
 					sibling->color = red;
 					sibling->llink->color = black;
@@ -261,7 +261,7 @@ void RBTree::deleteFixup(RBNode *pnode)
 		else
 		{
 			sibling = parent->llink;
-			if (sibling->color = red)
+			if (sibling->color == red)
 			{
 				sibling->color = black;
 				parent->color = red;
@@ -393,24 +393,23 @@ void RBTree::int_to_str(int x,char *str,bool color)
 	else if(color==black)
 		str[0]='B';
 }
+ofstream output;
 void RBTree::showBuf(char **buf,int x,int y)
 {
-	ofstream output("1");
+	
 	for(int i=0; i<y; i++){
 	    for(int j=0; j<x; j++)
 	        output<<(buf[i][j]==0? ' ':buf[i][j]);
 	    output<<endl;
 	}
+	output<<"=================================================================================="<<endl;
 }
   
 int RBTree::getHeight(RBNode *tree)
 {
 	if(tree==m_null)
 		return 0;
-    int h = 2;
-    int hl = tree->llink==m_null? 0 : getHeight(tree->llink);
-    int hr = tree->rlink==m_null? 0 : getHeight(tree->rlink);
-    return h +max(hl,hr);
+    return 2 +max(getHeight(tree->llink),getHeight(tree->rlink));
 }
 
 int RBTree::getWidth(RBNode *tree)
@@ -418,24 +417,20 @@ int RBTree::getWidth(RBNode *tree)
 
 	if(tree==m_null)
 		return 0;
-    int w = len_int(tree->key);
-    if(tree->llink!=m_null) w += getWidth(tree->llink);
-    if(tree->rlink!=m_null) w += getWidth(tree->rlink);
-    return w;
+    return len_int(tree->key)+getWidth(tree->llink)+getWidth(tree->rlink);
 }
 
 int RBTree::getRootPos(RBNode *tree,int x)
 {
-	
 	if(tree==m_null)
-		return 0;
-	return tree->llink==m_null? x : x + getWidth(tree->llink);
+		return x;
+	return x + getWidth(tree->llink);
 }
 
 void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 {
 	int root_len=len_int(tree->key);
-	int p1 = tree->llink==m_null? x : getRootPos(tree->llink,x);
+	int p1 = getRootPos(tree->llink,x);
 	int p2 = getRootPos(tree,x);
 	int p3 = tree->rlink==m_null? p2 : getRootPos(tree->rlink,p2+root_len);
 
@@ -451,6 +446,8 @@ void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 void RBTree::show()
 {
 	RBNode *tree=root;
+	if(tree==m_null)
+		return;
 	int x=getWidth(tree);
 	int y=getHeight(tree);
 	char **buf=new char*[y];
@@ -466,21 +463,35 @@ void RBTree::show()
 	delete[]buf;
 }
 #include<stdlib.h>
-#define N 1000
+#define N 200
 #define random(i) (rand()%i)
 int main()
 {
+	output.open("1");
 	RBTree tree;
 	int num=0;
-	while(num<60)
+	while(num<N)
 	{
 		int buf=random(N);
 		if(buf==0) buf=N;
 		if(tree.insertNode(buf)==0)
+		{
 			num++;
+			tree.show();
+		}
 	}
 
-	tree.show();
+	num=0;
+	while(num<N)
+	{
+		int buf=random(N);
+		if(buf==0) buf=N;
+		if(tree.deleteNode(buf)==0)
+		{
+			num++;
+			tree.show();
+		}
+	}
 	
 	return 0;
 }
