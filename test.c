@@ -8,6 +8,7 @@ int main()
 	b++;
 	printf("%d\n",(*b)[0]);
 
+
 	int *p[4];
 	p[0]=a;
 	printf("%d\n",*(++p[0]));
