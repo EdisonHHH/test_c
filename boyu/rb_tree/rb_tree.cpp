@@ -404,14 +404,51 @@ void RBTree::showBuf(char **buf,int x,int y)
 	}
 	output<<"=================================================================================="<<endl;
 }
-  
+/*
 int RBTree::getHeight(RBNode *tree)
 {
 	if(tree==m_null)
 		return 0;
     return 2 +max(getHeight(tree->llink),getHeight(tree->rlink));
 }
-
+*/
+int RBTree::getHeight(RBNode *tree)
+{
+	if(tree==m_null)
+		return 0;
+	stack<RBNode*> st;
+	RBNode *p=tree;
+	RBNode *pp=m_null;
+	int num=0;
+	int max=0;
+	while(p!=m_null||!st.empty())
+	{
+		while(p!=m_null)
+		{
+			st.push(p);
+			num++;
+			pp=p->rlink;
+			p=p->llink;
+			if(p==m_null)
+				p=pp;
+		}
+		p=st.top();
+		st.pop();
+		if(p->llink==m_null&&p->rlink==m_null)
+		{
+			if(num>max)
+				max=num;
+		}
+		num--;
+		if(!st.empty()&&st.top()->llink==p)
+			p=st.top()->rlink;
+		else
+			p=m_null;
+	}
+	return 2*max;
+   
+}
+/*
 int RBTree::getWidth(RBNode *tree)
 {
 
@@ -419,14 +456,35 @@ int RBTree::getWidth(RBNode *tree)
 		return 0;
     return len_int(tree->key)+getWidth(tree->llink)+getWidth(tree->rlink);
 }
+*/
+int RBTree::getWidth(RBNode *tree)
+{
 
+	if(tree==m_null)
+		return 0;
+	stack<RBNode*> st;
+	RBNode *p=tree;
+	st.push(p);
+	int len=0;
+	while(!st.empty())
+	{
+		p=st.top();
+		st.pop();
+		len+=len_int(p->key);
+		if(p->rlink!=m_null)
+			st.push(p->rlink);
+		if(p->llink!=m_null)
+			st.push(p->llink);
+	}
+    return len;
+}
 int RBTree::getRootPos(RBNode *tree,int x)
 {
 	if(tree==m_null)
 		return x;
 	return x + getWidth(tree->llink);
 }
-
+/*
 void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 {
 	int root_len=len_int(tree->key);
@@ -441,6 +499,57 @@ void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
 	if(p3>p2) buf[y+1][p3] = '\\';
 	if(tree->llink!=m_null) printInBuf(tree->llink,buf,x,y+2);
 	if(tree->rlink!=m_null)printInBuf( tree->rlink,buf,p2+root_len,y+2);
+}
+*/
+
+struct tree_info{
+	int x;
+	int y;
+	RBNode *tree;
+};
+void RBTree::printInBuf(RBNode *tree,char **buf, int x, int y)
+{
+	if(tree==m_null)
+		return;
+	stack<tree_info> st;
+	tree_info info;
+	info.x=x;
+	info.y=y;
+	info.tree=tree;
+	st.push(info);
+	while(!st.empty())
+	{
+		info=st.top();
+		st.pop();
+		x=info.x;
+		y=info.y;
+		tree=info.tree;
+		int root_len=len_int(tree->key);
+		int p1 = getRootPos(tree->llink,x);
+		int p2 = getRootPos(tree,x);
+		int p3 = tree->rlink==m_null? p2 : getRootPos(tree->rlink,p2+root_len);
+
+		buf[y][p2] = '|';
+		for(int i=p1; i<=p3; i++) buf[y+1][i]='-';
+		int_to_str(tree->key,&buf[y+1][p2],tree->color);
+		if(p1<p2) buf[y+1][p1] = '/';
+		if(p3>p2) buf[y+1][p3] = '\\';
+			
+		if(tree->rlink!=m_null)
+		{
+			info.x=p2+root_len;
+			info.y=y+2;
+			info.tree=tree->rlink;
+			st.push(info);		
+		}
+		if(tree->llink!=m_null)
+		{
+			info.x=x;
+			info.y=y+2;
+			info.tree=tree->llink;
+			st.push(info);
+		}
+	}
 }
 
 void RBTree::show()
@@ -463,7 +572,7 @@ void RBTree::show()
 	delete[]buf;
 }
 #include<stdlib.h>
-#define N 200
+#define N 10
 #define random(i) (rand()%i)
 int main()
 {
