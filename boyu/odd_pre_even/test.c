@@ -1,4 +1,9 @@
 #include<stdio.h>
+#include<stdlib.h>
+#define N 100
+#define random(i) (rand()%i)
+int a[N];
+int flag[N];
 void fun(int *a,int n)
 {
 	int i=0,j=0,k=0;
@@ -27,14 +32,27 @@ void fun(int *a,int n)
 		}
 		i++;
 	}
-	
 }
 int main()
 {
 	int i;
-	int a[6]={1,2,6,5,4,3};
-	fun(a,6);
-	for(i=0;i<6;i++){
+	int num=0;
+	while(num<N)
+	{
+		int buf=random(N);
+		if(flag[buf]==0)
+		{
+			flag[buf]=1;
+			a[num++]=buf;
+		}
+	}
+	for(i=0;i<N;i++){
+		printf("%d ",a[i]);	
+	}
+	printf("\n");
+	
+	fun(a,N);
+	for(i=0;i<N;i++){
 		printf("%d ",a[i]);	
 	}
 	printf("\n");
