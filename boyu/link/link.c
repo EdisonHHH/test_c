@@ -1,107 +1,13 @@
-/*
-#include<iostream>
-using namespace std;
-struct Node{
-	int key;
-	Node *next;
-};
-typedef struct Node *List;
-void createList(List *plist)
-{
-	if(plist==NULL||*plist!=NULL)
-	{
-		return;
-	}
-	int tmp;
-	Node *p=NULL;
-	Node *q=NULL;
-	cin>>tmp;
-	while(tmp)
-	{
-		p=new Node;
-		p->key=tmp;
-		p->next=NULL;
-		if(*plist==NULL)
-		{
-			*plist=p;
-			q=p;
-		}
-		else
-		{
-			q->next=p;
-			q=q->next;
-		}
-		cin>>tmp;
-	}
-	
-}
-void destroyList(List *plist)
-{
-	if(plist==NULL||*plist==NULL)
-	{
-		return;
-	}
-	Node *p=*plist;
-	while(*plist)
-	{
-		p=(*plist)->next;
-		delete *plist;
-		*plist=p;
-	}
-}
-void reverseList(List *plist)
-{
-	if(plist==NULL||*plist==NULL)
-	{
-		return;
-	}
-	Node *p=*plist;
-	Node *q=p->next;
-	Node *r=NULL;
-	while(q)
-	{
-		r=q->next;
-		q->next=p;
-		p=q;
-		q=r;
-	}
-	(*plist)->next=NULL;
-	*plist=p;
-}
-void printList(List list)
-{
-	if(list==NULL)
-	{
-		return;
-	}
-	while(list)
-	{
-		cout<<list->key<<' ';
-		list=list->next;
-	}
-	cout<<endl;
-}
-int main()
-{
-	List list=NULL;
-	createList(&list);
-	printList(list);
-	reverseList(&list);
-	printList(list);
-	destroyList(&list);
-	return 0;
-}
-*/
-#include<iostream>
-using namespace std;
+#include<stdio.h>
 #include<stdlib.h>
+#include<malloc.h>
 #define N 100
 #define random(i) (rand()%i)
 int flag[N];
-struct Node{
+typedef struct Node{
 	int key;
-	Node *next;
-};
+	struct Node *next;
+}Node;
 void createLink(Node *head,int len)
 {
 	if(head==0||head->next!=NULL)
@@ -115,7 +21,7 @@ void createLink(Node *head,int len)
 		{
 			flag[tmp]=1;
 			num++;
-			Node *newNode=new Node;
+			Node *newNode=(Node*)malloc(sizeof(Node));
 			newNode->key=tmp;
 			newNode->next=NULL;
 			p->next=newNode;
@@ -131,7 +37,7 @@ void destroyLink(Node *head)
 	while(p)
 	{
 		Node *p_next=p->next;
-		delete p;
+		free(p);
 		p=p_next;
 	}
 	head->next=NULL;
@@ -143,10 +49,10 @@ void printLink(Node *head)
 	Node *p=head->next;
 	while(p)
 	{
-		cout<<p->key<<" ";
+		printf("%d ",p->key);
 		p=p->next;
 	}
-	cout<<endl;
+	printf("\n");
 }
 void sort(Node *head)
 {
@@ -231,27 +137,27 @@ void merge(Node *head1,Node *head2)
 }
 int main()
 {
-	Node *head1=new Node;
+	Node *head1= (Node*)malloc(sizeof(Node));
 	head1->next=NULL;
 	createLink(head1,10);
 	sort(head1);
 	printLink(head1);
 	
-	Node *head2=new Node;
+	Node *head2=(Node*)malloc(sizeof(Node));
 	head2->next=NULL;
 	createLink(head2,20);
 	sort(head2);
 	printLink(head2);
 	
 	merge(head1,head2);
-	delete head2;
+	free(head2);
 	head2=NULL;
 	printLink(head1);
 	reverseList(head1);
 	printLink(head1);
 	
 	destroyLink(head1);
-	delete head1;
+	free(head1);
 	head1=NULL;
 	
 	return 0;
